@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "test",
+  "name": "cookie-store",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
