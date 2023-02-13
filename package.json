@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "cookie-store",
   "version": "1.0.0",
   "main": "index.js",
@@ -11,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/node": "^18.13.0",
     "mkdirp": "github:waspyro/node-mkdirp"
   }
 }
