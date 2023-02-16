@@ -1,5 +1,6 @@
 {
   "name": "cookie-store",
+  "module": "commonjs",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,5 +13,8 @@
   "dependencies": {
     "@types/node": "^18.13.0",
     "mkdirp": "github:waspyro/node-mkdirp"
+  },
+  "devDependencies": {
+    "persistorm": "github:waspyro/persistorm"
   }
 }

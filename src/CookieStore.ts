@@ -4,6 +4,8 @@ import {
     CookieStoreSetListener, SubdomainStore,
     UrlLike
 } from "./types";
+import type {StoreFS, StoreRedis} from "persistorm";
+
 import {
     cookie2filename,
     generateCookieName,
@@ -14,7 +16,7 @@ import {
     splitJoinedCookieString
 } from "./utils";
 
-export default class Jar {
+export class Jar {
     map = new Map
     constructor(private emitDel, private emitSet) {}
 
@@ -70,7 +72,7 @@ class CarryJar extends Array {
     }
 }
 
-class CookieStore {
+export default class CookieStore {
     jar: SubdomainStore
     #jarMap = {}
 
@@ -134,6 +136,25 @@ class CookieStore {
         const split = CookieStore.splitJoinedCookiesString(response.headers.get('set-cookie'))
         const parsed = parseSetCookies(split, requestUrl)
         return this.addMany(parsed)
+    }
+
+    #persisenerRef = null
+    async usePersistentStorage(storage: StoreFS | StoreRedis) { //todo: interface when available + pick used methods
+        const data = await storage.geta({})
+        const restoredCookies = this.addMany(Object.values(data))
+        this.#persisenerRef = {}
+        const Listener = action => cookie => this.#persisenerRef[action] =
+            storage[action](CookieStore.generateCookieName(cookie), cookie)
+        this.onSet(Listener('set'))
+        this.onDel(Listener('del'))
+        return restoredCookies
+    }
+
+    stopPersistentStorage() {
+        if(!this.#persisenerRef) return
+        this.offSet(this.#persisenerRef.set)
+        this.offDel(this.#persisenerRef.del)
+        this.#persisenerRef = null
     }
 
     filter
