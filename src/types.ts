@@ -1,4 +1,4 @@
-import type {Jar} from "./CookieStore";
+import {Jar} from "./Jar";
 
 export interface CookieData {
     name: string,

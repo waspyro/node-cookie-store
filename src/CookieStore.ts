@@ -1,9 +1,4 @@
-import {
-    CookieData,
-    CookieStoreDelListener,
-    CookieStoreSetListener, SubdomainStore,
-    UrlLike
-} from "./types";
+import {CookieData, CookieStoreDelListener, CookieStoreSetListener, SubdomainStore, UrlLike} from "./types";
 import type {StoreFS, StoreRedis} from "persistorm";
 
 import {
@@ -15,62 +10,8 @@ import {
     parseSetCookies,
     splitJoinedCookieString
 } from "./utils";
-
-export class Jar {
-    map = new Map
-    constructor(private emitDel, private emitSet) {}
-
-    #set(cookie) {
-        this.map.set(cookie.name, cookie)
-        this.emitSet(cookie)
-        return cookie
-    }
-
-    #del(cookie) {
-        const res = this.map.delete(cookie.name)
-        this.emitDel(cookie, res)
-        return null
-    }
-
-    #check(cookie): CookieData | null {
-        if(isExpiredCookie(cookie)) return this.#del(cookie)
-        return cookie
-    }
-
-    add(cookie: CookieData): CookieData | null {
-        return isBadCookie(cookie) ? this.#del(cookie) : this.#set(cookie)
-    }
-
-    clone(to = []) {
-        for(const cookie of this.map.values()) this.#check(cookie) && to.push(cookie)
-        return to
-    }
-
-    pick(name: string) {
-        const cookie = this.map.get(name)
-        if(!cookie) return null
-        return this.#check(cookie)
-    }
-
-}
-
-class CarryJar extends Array {
-
-    // assign(...objects) {
-    //     for(const object of objects)
-    //         if(typeof object === 'object')
-    //             for(const key in object)
-    //                 this.set(key, {name: key, value: object[key]})
-    //     return this
-    // }
-
-    toString = () => this.map(({name, value}) => `${name}=${value}`).join('; ')
-
-    cloneJars(...jars: Jar[]) {
-        for(const j of jars) j.clone(this)
-        return this
-    }
-}
+import {Jar} from "./Jar";
+import {CarryJar} from "./CarryJar";
 
 export default class CookieStore {
     jar: SubdomainStore
