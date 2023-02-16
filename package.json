@@ -2,8 +2,11 @@
   "name": "cookie-store",
   "module": "commonjs",
   "version": "1.0.0",
-  "main": "index.js",
+  "files": ["dist"],
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
+    "prepare": "rm -rf dist && tsc --outDir dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
