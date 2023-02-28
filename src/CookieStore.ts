@@ -54,7 +54,7 @@ export default class CookieStore {
         return cookies.map(el => this.add(el)).filter(el => el)
     }
 
-    get({hostname = '.'}: UrlLike) {
+    get({hostname = '.'}: UrlLike = {}) {
         //todo: caching
         //adding or deleting cookies for domain X should mark X and all known X subdomains as "cacheRequired"
         //when accessing domain X and X.cacheRequired we should calculate and cache cookies

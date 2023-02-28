@@ -13,7 +13,7 @@ export interface CookieData {
     secure?: boolean,
 }
 
-export type UrlLike = {hostname: string, pathname: string}
+export type UrlLike = {hostname?: string, pathname?: string}
 
 export type CookieStoreSetListener = (cookie: CookieData) => void
 

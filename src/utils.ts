@@ -1,6 +1,6 @@
 import {CookieData, UrlLike} from "./types";
 
-export const parseSetCookie = (str: string, {hostname = '.', pathname = '/'}: UrlLike): CookieData => {
+export const parseSetCookie = (str: string, {hostname = '.', pathname = '/'}: UrlLike = {}): CookieData => {
     const parts = str.split(';').map(part => part.trim().split('='))
     const [name, value] = parts.shift()
     const cookie = {name,value} as CookieData
@@ -17,7 +17,7 @@ export const parseSetCookie = (str: string, {hostname = '.', pathname = '/'}: Ur
     return cookie
 }
 
-export const parseSetCookies = (setCookies: string[], urlLike: UrlLike) =>
+export const parseSetCookies = (setCookies: string[], urlLike?: UrlLike) =>
     setCookies.map(c => parseSetCookie(c, urlLike))
 
 //at the time of writing node's builtin fetch joins multiple set-cookies headers into one,

@@ -1,6 +1,7 @@
 import {Jar} from "./Jar";
+import {CookieData} from "./types";
 
-export class CarryJar extends Array {
+export class CarryJar extends Array<CookieData> {
 
     toString = () => this.map(({name, value}) => `${name}=${value}`).join('; ')
 
