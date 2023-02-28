@@ -46,6 +46,12 @@ export const splitJoinedCookieString = (str: string) => {
     return cookiesStrings
 }
 
+export const parseFromFetchResponse = (response: Response, requestUrl?: UrlLike) => {
+    if(!requestUrl) requestUrl = new URL(response.url)
+    const split = splitJoinedCookieString(response.headers.get('set-cookie'))
+    return parseSetCookies(split, requestUrl)
+}
+
 export const isExpiredCookie = (cookie: CookieData, timeOffset = 0) =>
     cookie.expires && Number(cookie.expires) < Date.now() - timeOffset
 

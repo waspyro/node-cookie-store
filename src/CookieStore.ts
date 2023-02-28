@@ -5,8 +5,7 @@ import {
     cookie2filename,
     generateCookieName,
     isBadCookie,
-    isExpiredCookie,
-    parseSetCookie,
+    isExpiredCookie, parseFromFetchResponse,
     parseSetCookies,
     splitJoinedCookieString
 } from "./utils";
@@ -72,12 +71,8 @@ export default class CookieStore {
         return cookies.cloneJars(jar.local, jar.multi)
     }
 
-    addFromFetchResponse = (response: Response, requestUrl?: UrlLike) => {
-        if(!requestUrl) requestUrl = new URL(response.url)
-        const split = CookieStore.splitJoinedCookiesString(response.headers.get('set-cookie'))
-        const parsed = parseSetCookies(split, requestUrl)
-        return this.addMany(parsed)
-    }
+    addFromFetchResponse = (response: Response, requestUrl?: UrlLike) =>
+        this.addMany(parseFromFetchResponse(response, requestUrl))
 
     #persisenerRef = null
     async usePersistentStorage(storage: StoreFS | StoreRedis) { //todo: interface when available + pick used methods
@@ -108,9 +103,9 @@ export default class CookieStore {
     #emitSet = (cookie: CookieData) => this.#setListeners.forEach(l => l(cookie))
     #emitDel = (cookie: CookieData, isIgnored: boolean) => this.#delListeners.forEach(l => l(cookie, isIgnored))
 
-    static parseSetCookie = parseSetCookie
+    static parseFromFetchResponse = parseFromFetchResponse
     static parseSetCookies = parseSetCookies
-    static splitJoinedCookiesString = splitJoinedCookieString
+    static splitJoinedCookieString = splitJoinedCookieString
     static isExpiredCookie = isExpiredCookie
     static generateCookieName = generateCookieName
     static cookie2filename = cookie2filename
