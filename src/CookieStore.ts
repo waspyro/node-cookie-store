@@ -1,5 +1,5 @@
 import {CookieData, CookieStoreEvents, SubdomainStore, UrlLike} from "./types";
-import type {StoreFS, StoreRedis} from "persistorm";
+import type {PersistormInstance} from "persistorm";
 
 import {
     cookie2filename,
@@ -76,7 +76,7 @@ export default class CookieStore {
 
     #persistListenerRef = {set: null, del: null}
 
-    usePersistentStorage = async (storage: StoreFS | StoreRedis) => { //todo: interface when available + pick used methods
+    usePersistentStorage = async (storage: PersistormInstance) => { //todo: interface when available + pick used methods
         const data = await storage.geta({})
         const restoredCookies = this.addMany(Object.values(data))
         for(const action in this.#persistListenerRef)
