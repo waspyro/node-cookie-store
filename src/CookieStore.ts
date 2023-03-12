@@ -1,16 +1,18 @@
 import {CookieData, CookieStoreEvents, SubdomainStore, UrlLike} from "./types";
 import type {PersistormInstance} from "persistorm";
+import Listenable from "listenable";
 
 import {
     cookie2filename,
     generateCookieName,
     isBadCookie,
-    isExpiredCookie, Listenable, parseFromFetchResponse,
+    isExpiredCookie, parseFromFetchResponse,
     parseSetCookies,
     splitJoinedCookieString
 } from "./utils";
 import {Jar} from "./Jar";
 import {CarryJar} from "./CarryJar";
+
 
 export default class CookieStore {
     jar: SubdomainStore

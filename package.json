@@ -2,7 +2,9 @@
   "name": "cookie-store",
   "module": "commonjs",
   "version": "1.0.0",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
@@ -15,6 +17,7 @@
   "description": "",
   "dependencies": {
     "@types/node": "^18.13.0",
+    "listenable": "github:waspyro/ts-listenable",
     "mkdirp": "github:waspyro/node-mkdirp"
   },
   "devDependencies": {

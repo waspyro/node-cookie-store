@@ -1,5 +1,5 @@
 import {Jar} from "./Jar";
-import {Listenable} from "./utils";
+import Listenable from "listenable";
 
 export interface CookieData {
     name: string,
@@ -27,5 +27,3 @@ export interface SubdomainStore {
     local: Jar
     meta: {subdomain: string, domain: string}
 }
-
-export type Listener<T> = (args: T) => void

@@ -1,4 +1,4 @@
-import {CookieData, Listener, UrlLike} from "./types";
+import {CookieData, UrlLike} from "./types";
 
 export const parseSetCookie = (str: string, {hostname = '.', pathname = '/'}: UrlLike = {}): CookieData => {
     const parts = str.split(';').map(part => part.trim().split('='))
@@ -63,30 +63,3 @@ export const cookie2filename = (cookie: CookieData, ext = '.cookie.json') =>
 
 export const isBadCookie = (cookie) =>
     !cookie.value || isExpiredCookie(cookie)
-
-export class Listenable<T> {
-    listeners = []
-
-    emit = (args: T) => {
-        for (let i = 0; i < this.listeners.length; ++i)
-            this.listeners[i](args)
-        return this
-    }
-
-    on = (cb: Listener<T>) =>
-        this.listeners.push(cb) && cb
-
-    once = (cb: Listener<T>) => {
-        const listener = this.on(args => {
-            this.off(listener)
-            cb(args)
-        })
-        return listener
-    }
-
-    off = (cb: Listener<T>) => {
-        const before = this.listeners.length
-        this.listeners = this.listeners.filter(el => el !== cb)
-        return before - this.listeners.length
-    }
-}
