@@ -1,5 +1,6 @@
-import {CookieData, CookieStoreDelListener, CookieStoreSetListener, SubdomainStore, UrlLike} from "./types";
-import type {StoreFS, StoreRedis} from "persistorm";
+import {CookieData, CookieStoreEvents, SubdomainStore, UrlLike} from "./types";
+import type {PersistormInstance} from "persistorm";
+import Listenable from "listenable";
 
 import {
     cookie2filename,
@@ -12,6 +13,7 @@ import {
 import {Jar} from "./Jar";
 import {CarryJar} from "./CarryJar";
 
+
 export default class CookieStore {
     jar: SubdomainStore
     #jarMap = {}
@@ -23,8 +25,8 @@ export default class CookieStore {
 
     createSubdomainStore = (domain = '.', subdomain = '.'): SubdomainStore => ({
         sub: {},
-        multi: new Jar(this.#emitDel, this.#emitSet),
-        local: new Jar(this.#emitDel, this.#emitSet),
+        multi: new Jar(this.events),
+        local: new Jar(this.events),
         meta: {subdomain, domain}
     })
 
@@ -74,34 +76,28 @@ export default class CookieStore {
     addFromFetchResponse = (response: Response, requestUrl?: UrlLike) =>
         this.addMany(parseFromFetchResponse(response, requestUrl))
 
-    #persisenerRef = null
-    async usePersistentStorage(storage: StoreFS | StoreRedis) { //todo: interface when available + pick used methods
+    #persistListenerRef = {set: null, del: null}
+
+    usePersistentStorage = async (storage: PersistormInstance) => { //todo: interface when available + pick used methods
         const data = await storage.geta({})
         const restoredCookies = this.addMany(Object.values(data))
-        this.#persisenerRef = {}
-        const Listener = action => cookie => this.#persisenerRef[action] =
-            storage[action](CookieStore.generateCookieName(cookie), cookie)
-        this.onSet(Listener('set'))
-        this.onDel(Listener('del'))
+        for(const action in this.#persistListenerRef)
+            this.#persistListenerRef[action] = this.events[action].on(([cookie]) =>
+                storage[action](generateCookieName(cookie), cookie))
         return restoredCookies
     }
 
-    stopPersistentStorage() {
-        if(!this.#persisenerRef) return
-        this.offSet(this.#persisenerRef.set)
-        this.offDel(this.#persisenerRef.del)
-        this.#persisenerRef = null
+    stopPersistentStorage = () => {
+        for(const action in this.#persistListenerRef)
+            this.events[action].off(this.#persistListenerRef[action])
     }
 
-    filter
-    #setListeners = []
-    #delListeners = []
-    onSet = (listener: CookieStoreSetListener) => this.#setListeners.push(listener)
-    onDel = (listener: CookieStoreDelListener) => this.#delListeners.push(listener)
-    offSet = (listener: CookieStoreSetListener) => this.#setListeners.filter(el => el !== el)
-    offDel = (listener: CookieStoreDelListener) => this.#delListeners.filter(el => el !== el)
-    #emitSet = (cookie: CookieData) => this.#setListeners.forEach(l => l(cookie))
-    #emitDel = (cookie: CookieData, isIgnored: boolean) => this.#delListeners.forEach(l => l(cookie, isIgnored))
+    filter: (cookie: CookieData) => boolean
+
+    events: CookieStoreEvents = {
+        set: new Listenable<[CookieData]>(),
+        del: new Listenable<[CookieData, boolean]>()
+    }
 
     static parseFromFetchResponse = parseFromFetchResponse
     static parseSetCookies = parseSetCookies

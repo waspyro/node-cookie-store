@@ -1,4 +1,5 @@
 import {Jar} from "./Jar";
+import Listenable from "listenable";
 
 export interface CookieData {
     name: string,
@@ -15,13 +16,9 @@ export interface CookieData {
 
 export type UrlLike = {hostname?: string, pathname?: string}
 
-export type CookieStoreSetListener = (cookie: CookieData) => void
-
-export type CookieStoreDelListener = (cookie: CookieData, isIgnored: boolean) => void
-
 export type CookieStoreEvents = {
-    set: CookieStoreSetListener[]
-    del: CookieStoreDelListener[]
+    set: Listenable<[CookieData]>,
+    del: Listenable<[CookieData, boolean]>
 }
 
 export interface SubdomainStore {
