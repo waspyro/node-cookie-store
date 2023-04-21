@@ -13,7 +13,6 @@ import {
 import {Jar} from "./Jar";
 import {CarryJar} from "./CarryJar";
 
-
 export default class CookieStore {
     jar: SubdomainStore
     #jarMap = {}
@@ -78,9 +77,15 @@ export default class CookieStore {
 
     #persistListenerRef = {set: null, del: null}
 
-    usePersistentStorage = async (storage: PersistormInstance) => { //todo: interface when available + pick used methods
+    usePersistentStorage = async (storage: PersistormInstance, deleteBrokenCookies = false) => {
         const data = await storage.geta({})
-        const restoredCookies = this.addMany(Object.values(data))
+
+        if(deleteBrokenCookies)
+            for(const name in data)
+                if(data[name] === null)
+                    storage.del(name)
+
+        const restoredCookies = this.addMany(Object.values(data).filter(Boolean) as any)
         for(const action in this.#persistListenerRef)
             this.#persistListenerRef[action] = this.events[action].on(([cookie]) =>
                 storage[action](generateCookieName(cookie), cookie))
