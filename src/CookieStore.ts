@@ -6,7 +6,7 @@ import {
     cookie2filename,
     generateCookieName,
     isBadCookie,
-    isExpiredCookie, parseFromFetchResponse,
+    isExpiredCookie, parseFromFetchResponse, parseSetCookie,
     parseSetCookies,
     splitJoinedCookieString
 } from "./utils";
@@ -106,6 +106,7 @@ export default class CookieStore {
 
     static parseFromFetchResponse = parseFromFetchResponse
     static parseSetCookies = parseSetCookies
+    static parseSetCookie = parseSetCookie
     static splitJoinedCookieString = splitJoinedCookieString
     static isExpiredCookie = isExpiredCookie
     static generateCookieName = generateCookieName
