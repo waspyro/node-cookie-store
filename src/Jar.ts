@@ -2,17 +2,17 @@ import {CookieData, CookieStoreEvents} from "./types";
 import {isBadCookie, isExpiredCookie} from "./utils";
 
 export class Jar {
-    map = new Map
+    map = new Map<string, CookieData>
 
     constructor(private events: CookieStoreEvents) {}
 
-    #set(cookie) {
+    #set(cookie: CookieData) {
         this.map.set(cookie.name, cookie)
         this.events.set.emit([cookie])
         return cookie
     }
 
-    #del(cookie) {
+    #del(cookie: CookieData) {
         const res = this.map.delete(cookie.name)
         this.events.del.emit([cookie, res])
         return null

@@ -1,12 +1,18 @@
 import {Jar} from "./Jar";
-import {CookieData} from "./types";
 
-export class CarryJar extends Array<CookieData> {
+export class CarryJar extends Map<string, string> {
 
-    toString = () => this.map(({name, value}) => `${name}=${value}`).join('; ')
-
-    cloneJars(...jars: Jar[]) {
-        for (const j of jars) j.clone(this)
+    addFromJar = (jar: Jar) => {
+        for(const cookie of jar.map.values())
+            this.set(cookie.name, cookie.value)
         return this
     }
+
+    toString = () => { //todo? should encode name and value automatically? 🤔
+        let str = ''
+        for(const [name, value] of this.entries())
+            str += `${name}=${value}; `
+        return str.substring(0, str.length-2)
+    }
+
 }

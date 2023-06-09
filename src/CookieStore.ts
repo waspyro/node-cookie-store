@@ -63,13 +63,15 @@ export default class CookieStore {
 
         let jar = this.jar
         for(let i = domainSplits.length-1; i >= 0; i--) {
-            cookies.cloneJars(jar.multi)
+            cookies.addFromJar(jar.multi)
             const domain = domainSplits[i]
             if(!jar.sub[domain]) return cookies
             jar = jar.sub[domain]
         }
 
-        return cookies.cloneJars(jar.local, jar.multi)
+        return cookies
+          .addFromJar(jar.multi)
+          .addFromJar(jar.local)
     }
 
     addFromFetchResponse = (response: Response, requestUrl?: UrlLike) =>
