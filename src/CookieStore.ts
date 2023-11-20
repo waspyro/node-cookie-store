@@ -1,6 +1,6 @@
 import {CookieData, CookieStoreEvents, SubdomainStore, UrlLike} from "./types";
-import type {PersistormInstance} from "persistorm";
-import Listenable from "listenable";
+import type {PersistormInstance} from "persistorm"; //should it be dev dependency?
+import Listenable from "echolator";
 
 import {
     cookie2filename,

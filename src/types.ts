@@ -1,5 +1,5 @@
 import {Jar} from "./Jar";
-import Listenable from "listenable";
+import Listenable from "echolator";
 
 export interface CookieData {
     name: string,

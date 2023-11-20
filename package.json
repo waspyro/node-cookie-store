@@ -16,11 +16,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/node": "^18.13.0",
-    "listenable": "github:waspyro/ts-listenable",
-    "mkdirp": "github:waspyro/node-mkdirp"
+    "echolator": "^1.0.0"
   },
   "devDependencies": {
-    "persistorm": "github:waspyro/persistorm"
+    "persistorm": "^2.0.1"
   }
 }
